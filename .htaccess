@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Перенаправление с http на https и с домена без www на https://www.
+    RewriteCond %{HTTPS} off [OR]
+    RewriteCond %{HTTP_HOST} !^www\. [NC]
+    RewriteRule ^(.*)$ https://www.1weapp.online/$1 [R=301,L]
+
+    # 2. Поддержка History API для SPA (React/Vite)
+    # Если запрашиваемый файл или папка физически существуют — отдаем их напрямую
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Если пути физически нет (например, внутренний роутинг React) — перенаправляем на index.html
+    RewriteRule ^ index.html [L]
+</IfModule>
